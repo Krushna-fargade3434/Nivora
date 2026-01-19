@@ -81,21 +81,21 @@ export function NoteEditor({ note, open, onClose, onSave }: NoteEditorProps) {
           ? "max-w-[100vw] w-[100vw] h-[100vh] max-h-[100vh] rounded-none" 
           : "sm:max-w-[600px] max-h-[90vh]"
       )}>
-        <DialogHeader className="pr-12">
-          <div className="flex items-center justify-between gap-2">
-            <DialogTitle className="text-lg sm:text-xl flex-1">{note ? 'Edit Note' : 'Create Note'}</DialogTitle>
+        <DialogHeader className="pr-10 sm:pr-12">
+          <div className="flex items-center justify-between gap-1 sm:gap-2">
+            <DialogTitle className="text-base sm:text-lg md:text-xl flex-1 pr-1">{note ? 'Edit Note' : 'Create Note'}</DialogTitle>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsFullscreen(!isFullscreen)}
-              className="h-8 w-8 shrink-0 -mr-2"
+              className="h-9 w-9 sm:h-8 sm:w-8 shrink-0 -mr-1 sm:-mr-2 touch-manipulation"
               type="button"
               title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
             >
               {isFullscreen ? (
-                <Minimize2 className="h-4 w-4" />
+                <Minimize2 className="h-5 w-5 sm:h-4 sm:w-4" />
               ) : (
-                <Maximize2 className="h-4 w-4" />
+                <Maximize2 className="h-5 w-5 sm:h-4 sm:w-4" />
               )}
             </Button>
           </div>
