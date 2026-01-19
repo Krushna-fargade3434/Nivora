@@ -10,8 +10,9 @@ export default function Landing() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Redirect logged-in users to dashboard
     if (!loading && user) {
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }
   }, [user, loading, navigate]);
 

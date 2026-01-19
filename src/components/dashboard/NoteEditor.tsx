@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Maximize2, Minimize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 import { Note, CreateNoteInput } from '@/hooks/useNotes';
 
 interface NoteEditorProps {
@@ -29,6 +30,7 @@ export function NoteEditor({ note, open, onClose, onSave }: NoteEditorProps) {
   const [bgColor, setBgColor] = useState('#ffffff');
   const [tags, setTags] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     if (note) {
@@ -73,9 +75,30 @@ export function NoteEditor({ note, open, onClose, onSave }: NoteEditorProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">{note ? 'Edit Note' : 'Create Note'}</DialogTitle>
+      <DialogContent className={cn(
+        "overflow-y-auto transition-all",
+        isFullscreen 
+          ? "max-w-[100vw] w-[100vw] h-[100vh] max-h-[100vh] rounded-none" 
+          : "sm:max-w-[600px] max-h-[90vh]"
+      )}>
+        <DialogHeader className="pr-12">
+          <div className="flex items-center justify-between gap-2">
+            <DialogTitle className="text-lg sm:text-xl flex-1">{note ? 'Edit Note' : 'Create Note'}</DialogTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="h-8 w-8 shrink-0 -mr-2"
+              type="button"
+              title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="h-4 w-4" />
+              ) : (
+                <Maximize2 className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
           <DialogDescription className="sr-only">
             {note ? 'Edit your note details below' : 'Create a new note by filling out the form below'}
           </DialogDescription>
@@ -104,8 +127,9 @@ export function NoteEditor({ note, open, onClose, onSave }: NoteEditorProps) {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your note..."
-              rows={6}
-              className="text-sm sm:text-base resize-none"
+              rows={isFullscreen ? 20 : 6}
+              className="text-sm sm:text-base resize-none font-mono whitespace-pre-wrap"
+              style={{ whiteSpace: 'pre-wrap' }}
             />
           </div>
 

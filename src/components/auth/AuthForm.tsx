@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Mail, Lock, User, Loader2, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, User, Loader2, ArrowRight, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const signInSchema = z.object({
@@ -29,6 +29,7 @@ export function AuthForm() {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +74,8 @@ export function AuthForm() {
           setErrors({ general: error.message });
         }
       } else {
-        navigate('/dashboard');
+        // Always redirect to dashboard after successful login
+        navigate('/dashboard', { replace: true });
       }
     } catch (err) {
       setErrors({ general: 'An unexpected error occurred. Please try again.' });
@@ -183,12 +185,24 @@ export function AuthForm() {
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
                       id="password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-11 h-12 rounded-xl"
+                      className="pl-11 pr-11 h-12 rounded-xl"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
+                    </button>
                   </div>
                   {errors.password && (
                     <p className="text-sm text-destructive">{errors.password}</p>

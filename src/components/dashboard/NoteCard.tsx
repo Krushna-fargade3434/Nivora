@@ -94,7 +94,7 @@ export const NoteCard = forwardRef<HTMLDivElement, NoteCardProps>(({
       </div>
 
       {/* Content preview */}
-      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3 mb-3 sm:mb-4 min-h-[3rem] sm:min-h-[3.75rem]">
+      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3 mb-3 sm:mb-4 min-h-[3rem] sm:min-h-[3.75rem] whitespace-pre-wrap font-mono">
         {note.content || 'No content'}
       </p>
 
