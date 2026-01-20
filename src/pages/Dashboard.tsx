@@ -3,16 +3,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, Search, FileText, Loader2 } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { NoteCard } from '@/components/dashboard/NoteCard';
-import { NoteEditor } from '@/components/dashboard/NoteEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useNotes, Note, CreateNoteInput } from '@/hooks/useNotes';
+import { useNotes } from '@/hooks/useNotes';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
-  const { notes, isLoading, createNote, updateNote, deleteNote, toggleFavorite, togglePin } = useNotes();
+  const { notes, isLoading, deleteNote, toggleFavorite, togglePin } = useNotes();
   const [searchQuery, setSearchQuery] = useState('');
-  const [editingNote, setEditingNote] = useState<Note | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
+  const navigate = useNavigate();
 
   const filteredNotes = useMemo(() => {
     if (!searchQuery.trim()) return notes;
@@ -21,19 +20,10 @@ export default function Dashboard() {
       (note) =>
         note.title.toLowerCase().includes(query) ||
         note.content?.toLowerCase().includes(query) ||
-        note.tags?.some((tag) => tag.toLowerCase().includes(query))
+        note.tags?.some((tag) => tag.toLowerCase().includes(query)
+      )
     );
   }, [notes, searchQuery]);
-
-  const handleSaveNote = async (data: CreateNoteInput) => {
-    if (editingNote) {
-      await updateNote.mutateAsync({ id: editingNote.id, ...data });
-      setEditingNote(null);
-    } else {
-      await createNote.mutateAsync(data);
-      setIsCreating(false);
-    }
-  };
 
   const handleDeleteNote = async (id: string) => {
     await deleteNote.mutateAsync(id);
@@ -73,7 +63,7 @@ export default function Dashboard() {
             />
           </div>
           <Button
-            onClick={() => setIsCreating(true)}
+            onClick={() => navigate('/dashboard/new')}
             className="h-11 sm:h-12 px-5 sm:px-6 rounded-xl text-sm sm:text-base w-full sm:w-auto"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
@@ -104,7 +94,7 @@ export default function Dashboard() {
                 : 'Create your first note to get started with Nivora'}
             </p>
             {!searchQuery && (
-              <Button onClick={() => setIsCreating(true)} className="rounded-xl">
+              <Button onClick={() => navigate('/dashboard/new')} className="rounded-xl">
                 <Plus className="w-4 h-4 mr-2" />
                 Create your first note
               </Button>
@@ -122,7 +112,7 @@ export default function Dashboard() {
                 <NoteCard
                   key={note.id}
                   note={note}
-                  onEdit={setEditingNote}
+                  onEdit={(n) => navigate(`/dashboard/note/${n.id}`)}
                   onDelete={handleDeleteNote}
                   onToggleFavorite={(id, isFavorite) =>
                     toggleFavorite.mutate({ id, is_favorite: isFavorite })
@@ -135,17 +125,6 @@ export default function Dashboard() {
             </AnimatePresence>
           </motion.div>
         )}
-
-        {/* Note editor modal */}
-        <NoteEditor
-          note={editingNote}
-          open={isCreating || editingNote !== null}
-          onSave={handleSaveNote}
-          onClose={() => {
-            setIsCreating(false);
-            setEditingNote(null);
-          }}
-        />
       </div>
     </DashboardLayout>
   );

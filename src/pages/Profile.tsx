@@ -1,13 +1,27 @@
 import { motion } from 'framer-motion';
-import { User, Mail, Calendar, Shield } from 'lucide-react';
+import { User, Mail, Calendar, Shield, Pencil } from 'lucide-react';
 import { format } from 'date-fns';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotes } from '@/hooks/useNotes';
+import { useProfile } from '@/hooks/useProfile';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useState } from 'react';
 
 export default function Profile() {
   const { user } = useAuth();
   const { notes } = useNotes();
+  const { profile, updateAvatar } = useProfile();
+  const [open, setOpen] = useState(false);
+
+  const avatarOptions = [
+    '/avatars/photo1.png',
+    '/avatars/photo2.png',
+    '/avatars/photo3.png',
+    '/avatars/photo4.png',
+    '/profile.png',
+  ];
 
   const stats = [
     { label: 'Total Notes', value: notes.length },
@@ -44,7 +58,7 @@ export default function Profile() {
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 rounded-2xl overflow-hidden bg-primary/20 flex items-center justify-center">
                 <img 
-                  src="/profile.png" 
+                  src={profile?.avatar_url || '/profile.png'} 
                   alt="Profile" 
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -54,12 +68,40 @@ export default function Profile() {
                 />
                 <User className="w-10 h-10 text-primary hidden" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h2 className="font-display text-2xl font-semibold text-foreground">
                   {user?.user_metadata?.full_name || 'User'}
                 </h2>
                 <p className="text-muted-foreground">{user?.email}</p>
               </div>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="ml-auto">
+                    <Pencil className="w-4 h-4" />
+                    Edit Photo
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Select a profile avatar</DialogTitle>
+                  </DialogHeader>
+                  <div className="grid grid-cols-5 gap-4">
+                    {avatarOptions.map((url) => (
+                      <button
+                        key={url}
+                        onClick={async () => {
+                          await updateAvatar.mutateAsync(url);
+                          setOpen(false);
+                        }}
+                        className="rounded-xl overflow-hidden border hover:border-primary focus:outline-none"
+                        aria-label={`Choose avatar ${url}`}
+                      >
+                        <img src={url} alt="Avatar option" className="w-full h-20 object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
 

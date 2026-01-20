@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useProfile } from '@/hooks/useProfile';
 
 const navItems = [
   { icon: FileText, label: 'All Notes', path: '/dashboard' },
@@ -28,6 +29,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
+  const { profile } = useProfile();
 
   const handleSignOut = async () => {
     await signOut();
@@ -108,7 +110,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-sidebar-accent/50">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center shrink-0">
               <img 
-                src="/profile.png" 
+                src={profile?.avatar_url || '/profile.png'} 
                 alt="Profile" 
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -118,20 +120,20 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               />
               <User className="w-5 h-5 text-primary hidden" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">
-                {user?.email}
-              </p>
+            <div className="min-w-0">
+              <p className="text-sm font-medium truncate">{user?.user_metadata?.full_name || 'User'}</p>
+              <p className="text-xs text-sidebar-foreground/70 truncate">{user?.email}</p>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-auto"
+              onClick={handleSignOut}
+            >
+              <LogOut className="w-4 h-4" />
+              Sign out
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            className="w-full mt-2 justify-start gap-3 text-muted-foreground hover:text-destructive"
-            onClick={handleSignOut}
-          >
-            <LogOut className="w-5 h-5" />
-            Sign Out
-          </Button>
         </div>
       </motion.aside>
     </>

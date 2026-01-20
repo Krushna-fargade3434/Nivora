@@ -3,33 +3,31 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Search, Star, Loader2 } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { NoteCard } from '@/components/dashboard/NoteCard';
-import { NoteEditor } from '@/components/dashboard/NoteEditor';
+// import { NoteEditor } from '@/components/dashboard/NoteEditor';
 import { Input } from '@/components/ui/input';
-import { useNotes, Note, CreateNoteInput } from '@/hooks/useNotes';
+import { useNotes } from '@/hooks/useNotes';
+import { useNavigate } from 'react-router-dom';
 
 export default function Favorites() {
-  const { notes, isLoading, updateNote, deleteNote, toggleFavorite, togglePin } = useNotes();
+  const { notes, isLoading, updateNote, deleteNote } = useNotes();
   const [searchQuery, setSearchQuery] = useState('');
-  const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const navigate = useNavigate();
 
-  const favoriteNotes = useMemo(() => {
-    const favorites = notes.filter((note) => note.is_favorite);
-    if (!searchQuery.trim()) return favorites;
-    
+  const favoriteNotes = useMemo(() => notes.filter((n) => n.is_favorite), [notes]);
+
+  const filteredNotes = useMemo(() => {
+    if (!searchQuery.trim()) return favoriteNotes;
     const query = searchQuery.toLowerCase();
-    return favorites.filter(
+    return favoriteNotes.filter(
       (note) =>
         note.title.toLowerCase().includes(query) ||
         note.content?.toLowerCase().includes(query) ||
         note.tags?.some((tag) => tag.toLowerCase().includes(query))
     );
-  }, [notes, searchQuery]);
+  }, [favoriteNotes, searchQuery]);
 
-  const handleSaveNote = async (data: CreateNoteInput) => {
-    if (editingNote) {
-      await updateNote.mutateAsync({ id: editingNote.id, ...data });
-      setEditingNote(null);
-    }
+  const handleSaveNote = async (data: { id: string; is_favorite: boolean }) => {
+    await updateNote.mutateAsync({ id: data.id, is_favorite: data.is_favorite });
   };
 
   const handleDeleteNote = async (id: string) => {
@@ -76,60 +74,45 @@ export default function Favorites() {
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
-        ) : favoriteNotes.length === 0 ? (
+        ) : filteredNotes.length === 0 ? (
           <motion.div
             className="flex flex-col items-center justify-center py-20 text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <div className="w-16 h-16 rounded-2xl bg-yellow-100 flex items-center justify-center mb-4">
-              <Star className="w-8 h-8 text-yellow-500" />
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+              <Star className="w-8 h-8 text-primary" />
             </div>
             <h2 className="font-display text-xl font-semibold text-foreground mb-2">
-              {searchQuery ? 'No favorites found' : 'No favorites yet'}
+              No favorites yet
             </h2>
-            <p className="text-muted-foreground max-w-sm">
-              {searchQuery
-                ? 'Try adjusting your search terms'
-                : 'Star your important notes to see them here'}
+            <p className="text-muted-foreground mb-6 max-w-sm">
+              Star notes in your dashboard to see them here
             </p>
           </motion.div>
         ) : (
           <motion.div
-            className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
             <AnimatePresence mode="popLayout">
-              {favoriteNotes.map((note) => (
+              {filteredNotes.map((note) => (
                 <NoteCard
                   key={note.id}
                   note={note}
-                  onEdit={setEditingNote}
+                  onEdit={(n) => navigate(`/dashboard/note/${n.id}`)}
                   onDelete={handleDeleteNote}
                   onToggleFavorite={(id, isFavorite) =>
-                    toggleFavorite.mutate({ id, is_favorite: isFavorite })
+                    handleSaveNote({ id, is_favorite: isFavorite })
                   }
-                  onTogglePin={(id, isPinned) =>
-                    togglePin.mutate({ id, is_pinned: isPinned })
-                  }
+                  onTogglePin={() => {}}
                 />
               ))}
             </AnimatePresence>
           </motion.div>
         )}
-
-        {/* Note editor modal */}
-        <AnimatePresence>
-          {editingNote && (
-            <NoteEditor
-              note={editingNote}
-              onSave={handleSaveNote}
-              onClose={() => setEditingNote(null)}
-            />
-          )}
-        </AnimatePresence>
       </div>
     </DashboardLayout>
   );
