@@ -31,14 +31,14 @@ export default function Profile() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto px-4">
         {/* Header */}
         <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="font-display text-3xl md:text-4xl font-semibold text-foreground mb-2">
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground mb-2">
             Profile
           </h1>
           <p className="text-muted-foreground">
@@ -54,9 +54,9 @@ export default function Profile() {
           transition={{ delay: 0.1 }}
         >
           {/* Header section */}
-          <div className="p-8 bg-gradient-to-br from-primary/5 to-accent/5">
-            <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-2xl overflow-hidden bg-primary/20 flex items-center justify-center">
+          <div className="p-5 sm:p-8 bg-gradient-to-br from-primary/5 to-accent/5">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-primary/20 flex items-center justify-center">
                 <img 
                   src={profile?.avatar_url || '/profile.png'} 
                   alt="Profile" 
@@ -72,12 +72,13 @@ export default function Profile() {
                 <h2 className="font-display text-2xl font-semibold text-foreground">
                   {user?.user_metadata?.full_name || 'User'}
                 </h2>
-                <p className="text-muted-foreground">{user?.email}</p>
+                <p className="text-muted-foreground break-words">
+                  {user?.email}
+                </p>
               </div>
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="ml-auto">
-                    <Pencil className="w-4 h-4" />
+                  <Button variant="outline" className="w-full sm:w-auto sm:ml-auto">
                     Edit Photo
                   </Button>
                 </DialogTrigger>
@@ -85,7 +86,7 @@ export default function Profile() {
                   <DialogHeader>
                     <DialogTitle>Select a profile avatar</DialogTitle>
                   </DialogHeader>
-                  <div className="grid grid-cols-5 gap-4">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-4 max-h-[60vh] overflow-y-auto">
                     {avatarOptions.map((url) => (
                       <button
                         key={url}
@@ -96,7 +97,7 @@ export default function Profile() {
                         className="rounded-xl overflow-hidden border hover:border-primary focus:outline-none"
                         aria-label={`Choose avatar ${url}`}
                       >
-                        <img src={url} alt="Avatar option" className="w-full h-20 object-cover" />
+                        <img src={url} alt="Avatar option" className="w-full h-16 sm:h-20 object-cover" />
                       </button>
                     ))}
                   </div>
@@ -106,9 +107,9 @@ export default function Profile() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 divide-x divide-border border-t border-b border-border">
+          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-b border-border divide-y sm:divide-y-0 sm:divide-x">
             {stats.map((stat) => (
-              <div key={stat.label} className="p-6 text-center">
+              <div key={stat.label} className="p-4 sm:p-6 text-center">
                 <p className="font-display text-2xl font-semibold text-foreground">
                   {stat.value}
                 </p>
@@ -119,15 +120,14 @@ export default function Profile() {
 
           {/* Details */}
           <div className="p-6 space-y-4">
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-muted/50">
               <Mail className="w-5 h-5 text-muted-foreground" />
-              <div>
+              <div className="w-full">
                 <p className="text-sm text-muted-foreground">Email</p>
-                <p className="font-medium">{user?.email}</p>
+                <p className="font-medium break-words">{user?.email}</p>
               </div>
             </div>
-
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-muted/50">
               <Calendar className="w-5 h-5 text-muted-foreground" />
               <div>
                 <p className="text-sm text-muted-foreground">Member since</p>
@@ -138,8 +138,7 @@ export default function Profile() {
                 </p>
               </div>
             </div>
-
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-muted/50">
               <Shield className="w-5 h-5 text-muted-foreground" />
               <div>
                 <p className="text-sm text-muted-foreground">Account Status</p>

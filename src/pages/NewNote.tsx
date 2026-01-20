@@ -21,33 +21,33 @@ export default function NewNote() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto px-4">
         {/* Header */}
         <motion.div
-          className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <h1 className="font-display text-3xl md:text-4xl font-semibold text-foreground mb-2">
-            {isEdit ? 'Edit Note' : 'Create Note'}
-          </h1>
-          <p className="text-muted-foreground">
-            {isEdit ? 'Update your note details' : 'Add a new note to your collection'}
-          </p>
-        </motion.div>
+          className="mb-6 md:mb-8"
+           initial={{ opacity: 0, y: -20 }}
+           animate={{ opacity: 1, y: 0 }}
+         >
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground mb-2">
+             {isEdit ? 'Edit Note' : 'Create Note'}
+           </h1>
+           <p className="text-muted-foreground">
+             {isEdit ? 'Update your note details' : 'Add a new note to your collection'}
+           </p>
+         </motion.div>
 
-        {/* Full page editor */}
-        <motion.div
-          className="bg-card rounded-2xl border border-border/50 shadow-soft p-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <NoteEditorInline onSave={handleSave} note={existingNote} isEdit={isEdit} />
-        </motion.div>
-      </div>
-    </DashboardLayout>
-  );
+         {/* Full page editor */}
+         <motion.div
+          className="bg-card rounded-2xl border border-border/50 shadow-soft p-4 md:p-6"
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ delay: 0.1 }}
+         >
+           <NoteEditorInline onSave={handleSave} note={existingNote} isEdit={isEdit} />
+         </motion.div>
+       </div>
+     </DashboardLayout>
+   );
 }
 
 // Inline editor component updated with bg image and bold title
@@ -235,14 +235,14 @@ function NoteEditorInline({ onSave, note, isEdit }: { onSave: (data: CreateNoteI
 
       {/* Main content block with live bg image preview */}
       <div
-        className="relative space-y-5 p-5 rounded-xl border border-border/50 overflow-hidden"
-        style={{
-          backgroundColor: bgColor,
-          backgroundImage: bgImageUrl ? `url(${bgImageUrl})` : undefined,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
+        className="relative space-y-4 md:space-y-5 p-4 md:p-5 rounded-xl border border-border/50 overflow-hidden"
+         style={{
+           backgroundColor: bgColor,
+           backgroundImage: bgImageUrl ? `url(${bgImageUrl})` : undefined,
+           backgroundSize: 'cover',
+           backgroundPosition: 'center'
+         }}
+       >
         {/* Soft gradient overlay to keep inputs readable over the image */}
         {bgImageUrl && (
           <div
@@ -299,11 +299,11 @@ function NoteEditorInline({ onSave, note, isEdit }: { onSave: (data: CreateNoteI
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-3">
-        <Button type="button" variant="outline" onClick={() => navigate('/dashboard')}>
+      <div className="flex flex-col sm:flex-row items-center justify-end gap-3">
+      <Button type="button" variant="outline" onClick={() => navigate('/dashboard')} className="w-full sm:w-auto">
           Cancel
         </Button>
-        <Button type="submit" disabled={!title.trim()}>
+      <Button type="submit" disabled={!title.trim()} className="w-full sm:w-auto">
           <Save className="w-4 h-4 mr-2" />
           {isEdit ? 'Save Changes' : 'Create Note'}
         </Button>

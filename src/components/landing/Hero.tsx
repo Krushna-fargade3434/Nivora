@@ -12,7 +12,7 @@ export function Hero() {
           <img src="/logo.png" alt="Nivora" className="w-10 h-10 rounded-xl" />
           <span className="font-display text-2xl font-semibold">Nivora</span>
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Button asChild variant="ghost" size="sm">
             <Link to="/auth">Sign In</Link>
           </Button>
@@ -54,14 +54,14 @@ export function Hero() {
           </motion.div>
 
           <motion.h1
-            className="font-display text-5xl md:text-7xl font-semibold text-foreground leading-tight mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-          >
-            All Your Important Notes.{' '}
-            <span className="text-gradient">One Secure Place.</span>
-          </motion.h1>
+            className="font-display text-4xl sm:text-5xl md:text-7xl font-semibold text-foreground leading-tight mb-6"
+             initial={{ opacity: 0, y: 30 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+           >
+             All Your Important Notes.{' '}
+             <span className="text-gradient">One Secure Place.</span>
+           </motion.h1>
 
           <motion.p
             className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"

@@ -13,7 +13,7 @@ export function Footer() {
           © {new Date().getFullYear()} Nivora. All rights reserved.
         </p>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 flex-wrap justify-center md:justify-end">
           <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             Sign In
           </Link>

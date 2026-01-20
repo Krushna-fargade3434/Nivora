@@ -52,7 +52,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <motion.aside
         className={cn(
-          "fixed lg:sticky top-0 left-0 z-50 h-screen w-72 bg-sidebar border-r border-sidebar-border flex flex-col",
+          "fixed lg:sticky top-0 left-0 z-50 h-screen w-72 bg-sidebar border-r border-sidebar-border flex flex-col overflow-y-auto",
           "lg:translate-x-0 transition-transform duration-300",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
@@ -74,7 +74,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-2">
+        <nav className="px-4 py-2">
           <ul className="space-y-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -107,7 +107,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* User section */}
         <div className="p-4 border-t border-sidebar-border">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-sidebar-accent/50">
+          <div className="flex flex-col sm:flex-row items-center gap-3 px-4 py-3 rounded-xl bg-sidebar-accent/50">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center shrink-0">
               <img 
                 src={profile?.avatar_url || '/profile.png'} 
@@ -120,14 +120,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               />
               <User className="w-5 h-5 text-primary hidden" />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 w-full sm:w-auto">
               <p className="text-sm font-medium truncate">{user?.user_metadata?.full_name || 'User'}</p>
               <p className="text-xs text-sidebar-foreground/70 truncate">{user?.email}</p>
             </div>
             <Button
               variant="ghost"
               size="sm"
-              className="ml-auto"
+              className="mt-2 sm:mt-0 w-full sm:w-auto sm:ml-auto"
               onClick={handleSignOut}
             >
               <LogOut className="w-4 h-4" />
