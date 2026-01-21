@@ -127,8 +127,7 @@ export function NoteEditor({ note, open, onClose, onSave }: NoteEditorProps) {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your note..."
-              rows={isFullscreen ? 20 : 6}
-              className="text-sm sm:text-base resize-none font-mono whitespace-pre-wrap"
+              className="min-h-[50dvh] text-sm sm:text-base resize-none font-mono whitespace-pre-wrap"
               style={{ whiteSpace: 'pre-wrap' }}
             />
           </div>

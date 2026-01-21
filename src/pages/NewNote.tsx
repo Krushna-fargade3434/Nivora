@@ -282,7 +282,7 @@ function NoteEditorInline({ onSave, note, isEdit }: { onSave: (data: CreateNoteI
                 }
               }}
               placeholder="Write your note here..."
-              className="min-h-[200px] overflow-hidden bg-white/60 border-border/50 focus:border-primary"
+              className="min-h-[70dvh] overflow-hidden bg-white/60 border-border/50 focus:border-primary"
             />
           </div>
 
