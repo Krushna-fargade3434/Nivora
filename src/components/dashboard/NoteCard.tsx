@@ -4,7 +4,7 @@ import { Star, Pin, Trash2 } from 'lucide-react';
 import { Note } from '@/hooks/useNotes';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { cleanNoteContent, cleanNoteTitle } from '@/lib/cleanNoteContent';
+import { cleanNoteContent, cleanNoteTitle, cleanTags } from '@/lib/cleanNoteContent';
 
 interface NoteCardProps {
   note: Note;
@@ -94,7 +94,7 @@ export function NoteCard({
         <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-2">
           <span>{format(new Date(note.updated_at), 'M/d/yyyy')}</span>
           {note.tags && note.tags.length > 0 && (
-            <span className="truncate ml-2">{note.tags.join(', ')}</span>
+            <span className="truncate ml-2">{cleanTags(note.tags).join(', ')}</span>
           )}
         </div>
       </div>

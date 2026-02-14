@@ -24,3 +24,19 @@ export const cleanNoteTitle = (title: string): string => {
     .replace(/\bFAVORITES\b/gi, '')
     .trim();
 };
+
+/**
+ * Clean legacy text from tags array
+ * Filters out "FAVOURITES" and variations from tags
+ */
+export const cleanTags = (tags: string[] | null | undefined): string[] => {
+  if (!tags || !Array.isArray(tags)) return [];
+  
+  return tags
+    .map(tag => tag.trim())
+    .filter(tag => {
+      const upperTag = tag.toUpperCase();
+      return upperTag !== 'FAVOURITES' && upperTag !== 'FAVORITES';
+    })
+    .filter(Boolean);
+};

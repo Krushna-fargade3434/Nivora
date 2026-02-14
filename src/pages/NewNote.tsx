@@ -5,7 +5,7 @@ import { ArrowLeft, Check, Palette, Image as ImageIcon, X } from 'lucide-react';
 import { useNotes, CreateNoteInput, Note } from '@/hooks/useNotes';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { cleanNoteContent, cleanNoteTitle } from '@/lib/cleanNoteContent';
+import { cleanNoteContent, cleanNoteTitle, cleanTags } from '@/lib/cleanNoteContent';
 
 const colorOptions = [
   { value: '#F8F9FA', label: 'Default', bg: 'bg-[#F8F9FA]' },
@@ -15,6 +15,17 @@ const colorOptions = [
   { value: '#fae8e0', label: 'Peach', bg: 'bg-[#fae8e0]' },
   { value: '#e0f0fa', label: 'Sky', bg: 'bg-[#e0f0fa]' },
   { value: '#e0faf0', label: 'Mint', bg: 'bg-[#e0faf0]' },
+  { value: '#ffe4e8', label: 'Rose', bg: 'bg-[#ffe4e8]' },
+  { value: '#fff4e0', label: 'Amber', bg: 'bg-[#fff4e0]' },
+  { value: '#e8e0f5', label: 'Lilac', bg: 'bg-[#e8e0f5]' },
+  { value: '#ffe8f0', label: 'Pink', bg: 'bg-[#ffe8f0]' },
+  { value: '#f0fae8', label: 'Lime', bg: 'bg-[#f0fae8]' },
+  { value: '#e0e8f0', label: 'Slate', bg: 'bg-[#e0e8f0]' },
+  { value: '#ffeee0', label: 'Coral', bg: 'bg-[#ffeee0]' },
+  { value: '#e8faf5', label: 'Teal', bg: 'bg-[#e8faf5]' },
+  { value: '#f5e8fa', label: 'Mauve', bg: 'bg-[#f5e8fa]' },
+  { value: '#f5f0e8', label: 'Sand', bg: 'bg-[#f5f0e8]' },
+  { value: '#e8f5fa', label: 'Aqua', bg: 'bg-[#e8f5fa]' },
 ];
 
 const bgImages = [
@@ -26,6 +37,20 @@ const bgImages = [
   '/avatars/photo6.webp',
   '/avatars/photo7.jpeg',
   '/avatars/photo8.jpg',
+  '/avatars/photo9.jpeg',
+  '/avatars/photo10.jpeg',
+  '/avatars/photo11.jpg',
+  '/avatars/photo12.jpg',
+  '/avatars/photo13.jpg',
+  '/avatars/photo14.jpg',
+  '/avatars/photo15.jpeg',
+  '/avatars/photo16.jpg',
+  '/avatars/photo17.jpg',
+  '/avatars/photo18.jpg',
+  '/avatars/photo19.jpg',
+  '/avatars/photo20.jpeg',
+  '/avatars/photo21.jpg',
+  '/avatars/photo22.jpg',
 ];
 
 export default function NewNote() {
@@ -65,7 +90,7 @@ export default function NewNote() {
       setContent(cleanNoteContent(existingNote.content || ''));
       setBgColor(existingNote.bg_color || '#F8F9FA');
       setBgImageUrl(existingNote.bg_image_url || undefined);
-      setTags(existingNote.tags?.join(', ') || '');
+      setTags(cleanTags(existingNote.tags).join(', '));
     }
   }, [existingNote]);
 
