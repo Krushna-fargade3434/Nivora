@@ -4,6 +4,7 @@ import { Star, Pin, Trash2 } from 'lucide-react';
 import { Note } from '@/hooks/useNotes';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { cleanNoteContent, cleanNoteTitle } from '@/lib/cleanNoteContent';
 
 interface NoteCardProps {
   note: Note;
@@ -80,12 +81,12 @@ export function NoteCard({
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col">
         <h3 className="font-semibold text-foreground line-clamp-2 mb-3 text-base">
-          {note.title}
+          {cleanNoteTitle(note.title)}
         </h3>
 
         {note.content && (
           <p className="text-sm text-muted-foreground line-clamp-5 mb-4 flex-1">
-            {note.content}
+            {cleanNoteContent(note.content)}
           </p>
         )}
 

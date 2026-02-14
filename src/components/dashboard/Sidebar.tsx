@@ -60,8 +60,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Header */}
         <div className="p-6 flex items-center justify-between border-b border-border">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Nivora" className="w-9 h-9 rounded-lg shadow-sm" />
-            <span className="font-display text-xl font-semibold text-foreground">Nivora</span>
+            <img src="/logo.png" alt="Scriblet" className="w-9 h-9 rounded-lg shadow-sm" />
+            <span className="font-display text-xl font-semibold text-foreground">Scriblet</span>
           </Link>
           <Button
             variant="ghost"

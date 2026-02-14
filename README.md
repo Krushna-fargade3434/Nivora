@@ -1,8 +1,8 @@
-# Nivora
+# Scriblet
 
 A beautiful, secure, and feature-rich notes application for organizing your thoughts, credentials, reminders, and personal information. Built with modern web technologies for a seamless user experience.
 
-![Nivora](public/logo.png)
+![Scriblet](public/logo.png)
 
 ## ✨ Features
 
@@ -40,6 +40,16 @@ A beautiful, secure, and feature-rich notes application for organizing your thou
 - **Error Handling** - User-friendly error messages with toast notifications
 - **Back Navigation** - Easy navigation with back buttons on auth pages
 
+### 📱 Progressive Web App (PWA) & Offline Support
+- **Offline Functionality** - Access the app even without internet connection
+- **Install to Home Screen** - Install Scriblet as a standalone app on any device
+- **Service Worker** - Automatic caching of static assets for offline use
+- **Offline Indicator** - Visual feedback showing online/offline status
+- **Smart Caching** - Efficient caching strategies for images, fonts, and app resources
+- **Auto-Updates** - Automatic updates when new versions are available
+- **Background Sync** - Changes sync automatically when connection is restored
+- **Cached Content** - View previously loaded notes and pages while offline
+
 ## 🛠 Technologies
 
 ### Frontend
@@ -51,6 +61,8 @@ A beautiful, secure, and feature-rich notes application for organizing your thou
 - **Framer Motion** - Production-ready animation library
 - **React Router** - Client-side routing
 - **TanStack Query** - Powerful data synchronization
+- **vite-plugin-pwa** - Progressive Web App support with automatic service worker generation
+- **Workbox** - Service worker libraries for offline caching strategies
 
 ### Backend & Database
 - **Supabase** - Backend-as-a-Service platform
@@ -77,7 +89,7 @@ A beautiful, secure, and feature-rich notes application for organizing your thou
 1. **Clone the repository**
 ```sh
 git clone <YOUR_GIT_URL>
-cd nivora
+cd scriblet
 ```
 
 2. **Install dependencies**
@@ -103,7 +115,55 @@ npm run dev
 
 The app will be available at `http://localhost:8080`
 
-## 📜 Available Scripts
+## � PWA Installation & Offline Usage
+
+### Installing as a Progressive Web App
+
+Scriblet can be installed as a standalone app on your device:
+
+**Desktop (Chrome, Edge, Brave):**
+1. Visit the Scriblet website
+2. Look for the install icon (➕) in the address bar
+3. Click "Install" in the prompt
+4. Scriblet will open as a standalone app
+
+**Mobile (iOS Safari):**
+1. Open Scriblet in Safari
+2. Tap the Share button (⬆️)
+3. Scroll down and tap "Add to Home Screen"
+4. Tap "Add"
+
+**Mobile (Android Chrome):**
+1. Open Scriblet in Chrome
+2. Tap the menu (⋮)
+3. Tap "Add to Home Screen" or "Install App"
+4. Tap "Install"
+
+### Offline Features
+
+Once installed, Scriblet works offline with these capabilities:
+
+- **View Cached Pages**: Access previously loaded pages without internet
+- **Browse Notes**: View notes that were loaded while online
+- **Seamless Experience**: Automatic reconnection when internet returns
+- **Visual Indicators**: Clear offline/online status indicators
+- **Smart Caching**: Static assets cached for instant loading
+
+### How Offline Mode Works
+
+1. **First Visit**: App downloads and caches necessary files
+2. **Subsequent Visits**: Loads instantly from cache
+3. **Offline**: Shows cached content and offline indicator
+4. **Back Online**: Automatically syncs and updates content
+
+### Updating the App
+
+When a new version is available:
+1. A popup will appear asking to reload
+2. Click "Reload" to get the latest version
+3. The service worker updates automatically
+
+## �📜 Available Scripts
 
 ```sh
 # Start development server
@@ -125,28 +185,34 @@ npm run type-check
 ## 🗂 Project Structure
 
 ```
-nivora/
+scriblet/
 ├── public/              # Static assets
 │   ├── logo.png        # Application logo
-│   └── robots.txt      # SEO configuration
+│   ├── robots.txt      # SEO configuration
+│   └── site.webmanifest # PWA manifest
 ├── src/
 │   ├── components/     # React components
 │   │   ├── auth/       # Authentication components
 │   │   ├── dashboard/  # Dashboard components
 │   │   ├── landing/    # Landing page components
-│   │   └── ui/         # shadcn/ui components
+│   │   ├── ui/         # shadcn/ui components
+│   │   └── OfflineIndicator.tsx # Offline status indicator
 │   ├── contexts/       # React contexts
 │   │   └── AuthContext.tsx
 │   ├── hooks/          # Custom React hooks
 │   │   ├── useNotes.ts
-│   │   └── useProfile.ts
+│   │   ├── useProfile.ts
+│   │   └── useOnlineStatus.ts # Online/offline detection
 │   ├── integrations/   # External integrations
 │   │   └── supabase/   # Supabase client & types
 │   ├── lib/            # Utility functions
 │   ├── pages/          # Page components
+│   │   └── OfflinePage.tsx # Offline fallback page
 │   └── main.tsx        # Application entry point
 ├── supabase/           # Supabase configuration
 │   └── migrations/     # Database migrations
+├── vite.config.ts      # Vite & PWA configuration
+├── PWA_OFFLINE_GUIDE.md # PWA documentation
 └── package.json        # Dependencies and scripts
 ```
 
@@ -253,7 +319,7 @@ Customize the theme in `src/index.css`:
 
 ## 📌 Version Management
 
-Nivora uses a semantic versioning system to track updates and changes. The version is displayed in:
+Scriblet uses a semantic versioning system to track updates and changes. The version is displayed in:
 - **Profile Section** - Logged-in users can see the current version, version name, and last update date
 - **Footer** - Version number visible on the landing page
 
@@ -316,6 +382,11 @@ Your Name - [Your Website](https://yourwebsite.com)
 - [Unsplash](https://unsplash.com/) - Beautiful preset images
 - [Lucide Icons](https://lucide.dev/) - Icon library
 - [Framer Motion](https://www.framer.com/motion/) - Animation library
+- [Workbox](https://developer.chrome.com/docs/workbox/) - Service worker library
+
+## 📚 Additional Documentation
+
+- **PWA & Offline Guide**: See [PWA_OFFLINE_GUIDE.md](PWA_OFFLINE_GUIDE.md) for detailed information about Progressive Web App features, offline capabilities, and installation instructions.
 
 ## 📧 Support
 

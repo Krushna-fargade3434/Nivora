@@ -109,8 +109,8 @@ export function AuthForm() {
 
         {/* Logo */}
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <img src="/logo.png" alt="Nivora" className="w-10 h-10 rounded-xl" />
-          <span className="font-display text-2xl font-semibold">Nivora</span>
+          <img src="/logo.png" alt="Scriblet" className="w-10 h-10 rounded-xl" />
+          <span className="font-display text-2xl font-semibold">Scriblet</span>
         </Link>
 
         {/* Card */}

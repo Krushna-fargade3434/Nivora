@@ -5,6 +5,7 @@ import { ArrowLeft, Check, Palette, Image as ImageIcon, X } from 'lucide-react';
 import { useNotes, CreateNoteInput, Note } from '@/hooks/useNotes';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { cleanNoteContent, cleanNoteTitle } from '@/lib/cleanNoteContent';
 
 const colorOptions = [
   { value: '#F8F9FA', label: 'Default', bg: 'bg-[#F8F9FA]' },
@@ -60,8 +61,8 @@ export default function NewNote() {
 
   useEffect(() => {
     if (existingNote) {
-      setTitle(existingNote.title || '');
-      setContent(existingNote.content || '');
+      setTitle(cleanNoteTitle(existingNote.title || ''));
+      setContent(cleanNoteContent(existingNote.content || ''));
       setBgColor(existingNote.bg_color || '#F8F9FA');
       setBgImageUrl(existingNote.bg_image_url || undefined);
       setTags(existingNote.tags?.join(', ') || '');

@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { Note, CreateNoteInput } from '@/hooks/useNotes';
+import { cleanNoteContent, cleanNoteTitle } from '@/lib/cleanNoteContent';
 
 interface NoteEditorProps {
   note?: Note | null;
@@ -34,8 +35,8 @@ export function NoteEditor({ note, open, onClose, onSave }: NoteEditorProps) {
 
   useEffect(() => {
     if (note) {
-      setTitle(note.title);
-      setContent(note.content || '');
+      setTitle(cleanNoteTitle(note.title));
+      setContent(cleanNoteContent(note.content || ''));
       setBgColor(note.bg_color);
       setTags(note.tags?.join(', ') || '');
     } else {

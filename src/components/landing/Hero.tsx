@@ -9,8 +9,8 @@ export function Hero() {
       {/* Header */}
       <header className="relative z-20 flex items-center justify-between py-6 max-w-6xl mx-auto w-full">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="Nivora" className="w-10 h-10 rounded-xl" />
-          <span className="font-display text-2xl font-semibold">Nivora</span>
+          <img src="/logo.png" alt="Scriblet" className="w-10 h-10 rounded-xl" />
+          <span className="font-display text-2xl font-semibold">Scriblet</span>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
           <Button asChild variant="ghost" size="sm">

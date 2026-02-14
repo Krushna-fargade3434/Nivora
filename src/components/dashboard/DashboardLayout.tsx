@@ -25,7 +25,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           >
             <Menu className="w-5 h-5" />
           </Button>
-          <span className="font-display text-lg font-semibold truncate">Nivora</span>
+          <span className="font-display text-lg font-semibold truncate">Scriblet</span>
         </header>
 
         {/* Main content */}

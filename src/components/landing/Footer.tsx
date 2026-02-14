@@ -6,12 +6,12 @@ export function Footer() {
     <footer className="py-12 px-4 border-t border-border/50">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="Nivora" className="w-8 h-8 rounded-lg" />
-          <span className="font-display text-xl font-semibold">Nivora</span>
+          <img src="/logo.png" alt="Scriblet" className="w-8 h-8 rounded-lg" />
+          <span className="font-display text-xl font-semibold">Scriblet</span>
         </div>
         
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Nivora. All rights reserved. <span className="text-xs opacity-70">v{APP_VERSION}</span>
+          © {new Date().getFullYear()} Scriblet. All rights reserved. <span className="text-xs opacity-70">v{APP_VERSION}</span>
         </p>
 
         <div className="flex items-center gap-6 flex-wrap justify-center md:justify-end">
