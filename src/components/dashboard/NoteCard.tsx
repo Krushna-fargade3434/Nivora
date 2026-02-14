@@ -1,7 +1,6 @@
-import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import { Star, Pin, Trash2, Edit } from 'lucide-react';
+import { Star, Pin, Trash2 } from 'lucide-react';
 import { Note } from '@/hooks/useNotes';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -11,170 +10,124 @@ interface NoteCardProps {
   onEdit: (note: Note) => void;
   onDelete: (id: string) => void;
   onToggleFavorite: (id: string, isFavorite: boolean) => void;
-  onTogglePin: (id: string, isPinned: boolean) => void;
 }
 
 const colorMap: Record<string, string> = {
-  '#ffffff': 'bg-card',
-  '#ddd4c7': 'bg-note-cream',
-  '#c8dcd2': 'bg-note-sage',
-  '#dcd4e3': 'bg-note-lavender',
-  '#ddc8ba': 'bg-note-peach',
-  '#c4dde8': 'bg-note-sky',
-  '#c9e0d5': 'bg-note-mint',
+  '#ffffff': 'bg-background',
+  '#F8F9FA': 'bg-card',
+  '#1a1a1a': 'bg-card',
+  '#faf5f0': 'bg-note-cream',
+  '#e8f0e8': 'bg-note-sage',
+  '#f0e8f5': 'bg-note-lavender',
+  '#fae8e0': 'bg-note-peach',
+  '#e0f0fa': 'bg-note-sky',
+  '#e0faf0': 'bg-note-mint',
 };
 
-export const NoteCard = forwardRef<HTMLDivElement, NoteCardProps>(({ 
+export function NoteCard({ 
   note, 
   onEdit, 
   onDelete, 
-  onToggleFavorite, 
-  onTogglePin 
-}, ref) => {
+  onToggleFavorite,
+}: NoteCardProps) {
   const bgClass = colorMap[note.bg_color] || 'bg-card';
 
   return (
     <motion.div
-      ref={ref}
       layout
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -2 }}
+      onClick={() => onEdit(note)}
       className={cn(
-        "group relative p-4 sm:p-5 rounded-xl sm:rounded-2xl border border-border/50 shadow-soft hover:shadow-card transition-all duration-300 overflow-hidden",
+        "group relative p-5 rounded-xl border border-border/40 hover:border-border shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer min-h-[200px] flex flex-col",
         !note.bg_image_url && bgClass
       )}
+      style={note.bg_image_url ? { backgroundColor: note.bg_color || '#F8F9FA' } : undefined}
     >
       {/* Background image layer */}
       {note.bg_image_url && (
         <>
           <div
-            className="absolute inset-0 z-0"
+            className="absolute inset-0 z-0 rounded-xl"
             style={{
               backgroundImage: `url(${note.bg_image_url})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              transform: 'translateZ(0)'
+              backgroundRepeat: 'no-repeat',
             }}
           />
-          <div
-            className="absolute inset-0 z-0 pointer-events-none"
-            style={{
-              background: 'linear-gradient(to bottom, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.55) 45%, rgba(255,255,255,0.25) 100%)'
-            }}
-          />
+          {/* Light overlay for text readability */}
+          <div className="absolute inset-0 z-0 bg-gradient-to-b from-white/40 via-white/45 to-white/55" />
         </>
       )}
 
-      <div className="relative z-10">
-        {/* Pin indicator */}
-        {note.is_pinned && (
-          <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-sm">
-            <Pin className="w-3 h-3 text-primary-foreground" />
-          </div>
-        )}
-
-        {/* Header */}
-        <div className="flex items-start justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
-          <h3 className="font-display text-base sm:text-lg font-semibold text-foreground line-clamp-2">
-            {note.title}
-          </h3>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 sm:h-8 sm:w-8 shrink-0"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFavorite(note.id, note.is_favorite);
-            }}
-          >
-            <Star
-              className={cn(
-                "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
-                note.is_favorite
-                  ? "fill-yellow-400 text-yellow-400"
-                  : "text-muted-foreground"
-              )}
-            />
-          </Button>
+      {/* Pin indicator */}
+      {note.is_pinned && (
+        <div className="absolute top-3 right-3 z-10">
+          <Pin className="w-4 h-4 text-primary fill-primary drop-shadow-sm" />
         </div>
+      )}
 
-        {/* Content preview */}
-        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3 mb-3 sm:mb-4 min-h-[3rem] sm:min-h-[3.75rem] whitespace-pre-wrap font-mono">
-          {note.content || 'No content'}
-        </p>
+      {/* Favorite indicator */}
+      {note.is_favorite && (
+        <div className="absolute top-3 right-11 z-10">
+          <Star className="w-4 h-4 text-primary fill-primary drop-shadow-sm" />
+        </div>
+      )}
 
-        {/* Tags */}
-        {note.tags && note.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {note.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-0.5 text-xs font-medium rounded-full bg-primary/10 text-primary"
-              >
-                {tag}
-              </span>
-            ))}
-            {note.tags.length > 3 && (
-              <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-muted text-muted-foreground">
-                +{note.tags.length - 3}
-              </span>
-            )}
-          </div>
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex flex-col">
+        <h3 className="font-semibold text-foreground line-clamp-2 mb-3 text-base">
+          {note.title}
+        </h3>
+
+        {note.content && (
+          <p className="text-sm text-muted-foreground line-clamp-5 mb-4 flex-1">
+            {note.content}
+          </p>
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-border/30">
-          <span className="text-xs text-muted-foreground">
-            {format(new Date(note.note_date), 'MMM d, yyyy')}
-          </span>
-
-          {/* Actions */}
-          <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7"
-              onClick={(e) => {
-                e.stopPropagation();
-                onTogglePin(note.id, note.is_pinned);
-              }}
-            >
-              <Pin
-                className={cn(
-                  "w-3.5 h-3.5",
-                  note.is_pinned ? "text-primary" : "text-muted-foreground"
-                )}
-              />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7"
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit(note);
-              }}
-            >
-              <Edit className="w-3.5 h-3.5 text-muted-foreground" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 hover:text-destructive"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(note.id);
-              }}
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </Button>
-          </div>
+        <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-2">
+          <span>{format(new Date(note.updated_at), 'M/d/yyyy')}</span>
+          {note.tags && note.tags.length > 0 && (
+            <span className="truncate ml-2">{note.tags.join(', ')}</span>
+          )}
         </div>
+      </div>
+
+      {/* Action buttons - visible on mobile, visible on hover on desktop */}
+      <div className="absolute bottom-3 right-3 z-20 flex sm:hidden sm:group-hover:flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 rounded-full bg-background/95 backdrop-blur-sm hover:bg-background shadow-sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite(note.id, note.is_favorite);
+          }}
+        >
+          <Star
+            className={cn(
+              "w-4 h-4",
+              note.is_favorite ? "fill-primary text-primary" : "text-muted-foreground"
+            )}
+          />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 rounded-full bg-background/95 backdrop-blur-sm hover:bg-background hover:text-destructive shadow-sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(note.id);
+          }}
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
       </div>
     </motion.div>
   );
-});
-
-NoteCard.displayName = 'NoteCard';
+}

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { APP_VERSION } from '@/lib/version';
 
 export function Footer() {
   return (
@@ -10,7 +11,7 @@ export function Footer() {
         </div>
         
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Nivora. All rights reserved.
+          © {new Date().getFullYear()} Nivora. All rights reserved. <span className="text-xs opacity-70">v{APP_VERSION}</span>
         </p>
 
         <div className="flex items-center gap-6 flex-wrap justify-center md:justify-end">

@@ -52,16 +52,16 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <motion.aside
         className={cn(
-          "fixed lg:sticky top-0 left-0 z-50 h-screen w-72 bg-sidebar border-r border-sidebar-border flex flex-col overflow-y-auto",
+          "fixed lg:sticky top-0 left-0 z-50 h-screen w-72 bg-card border-r border-border flex flex-col overflow-y-auto shadow-sm",
           "lg:translate-x-0 transition-transform duration-300",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Header */}
-        <div className="p-6 flex items-center justify-between">
+        <div className="p-6 flex items-center justify-between border-b border-border">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Nivora" className="w-9 h-9 rounded-lg" />
-            <span className="font-display text-xl font-semibold">Nivora</span>
+            <img src="/logo.png" alt="Nivora" className="w-9 h-9 rounded-lg shadow-sm" />
+            <span className="font-display text-xl font-semibold text-foreground">Nivora</span>
           </Link>
           <Button
             variant="ghost"
@@ -74,7 +74,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="px-4 py-2">
+        <nav className="px-4 py-4 flex-1">
           <ul className="space-y-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -84,10 +84,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     to={item.path}
                     onClick={onClose}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                      "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all relative",
                       isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                        ? "bg-primary/10 text-primary"
+                        : "text-foreground hover:bg-muted"
                     )}
                   >
                     <item.icon className="w-5 h-5" />
@@ -106,9 +106,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </nav>
 
         {/* User section */}
-        <div className="p-4 border-t border-sidebar-border">
-          <div className="flex flex-col sm:flex-row items-center gap-3 px-4 py-3 rounded-xl bg-sidebar-accent/50">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center shrink-0">
+        <div className="p-4 border-t border-border mt-auto">
+          <div className="flex flex-col sm:flex-row items-center gap-3 px-4 py-3 rounded-xl bg-muted/50 border border-border">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-primary/10 border-2 border-primary/20 flex items-center justify-center shrink-0">
               <img 
                 src={profile?.avatar_url || '/profile.png'} 
                 alt="Profile" 
@@ -118,20 +118,19 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   e.currentTarget.nextElementSibling?.classList.remove('hidden');
                 }}
               />
-              <User className="w-5 h-5 text-primary hidden" />
+              <User className="w-5 h-5 text-primary/60 hidden" />
             </div>
             <div className="min-w-0 w-full sm:w-auto">
-              <p className="text-sm font-medium truncate">{user?.user_metadata?.full_name || 'User'}</p>
-              <p className="text-xs text-sidebar-foreground/70 truncate">{user?.email}</p>
+              <p className="text-sm font-semibold truncate text-foreground">{user?.user_metadata?.full_name || 'User'}</p>
+              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
             </div>
             <Button
               variant="ghost"
               size="sm"
-              className="mt-2 sm:mt-0 w-full sm:w-auto sm:ml-auto"
+              className="mt-2 sm:mt-0 w-full sm:w-auto sm:ml-auto hover:bg-destructive/10 hover:text-destructive"
               onClick={handleSignOut}
             >
               <LogOut className="w-4 h-4" />
-              Sign out
             </Button>
           </div>
         </div>

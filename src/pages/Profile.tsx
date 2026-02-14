@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { User, Mail, Calendar, Shield, Pencil } from 'lucide-react';
+import { User, Mail, Calendar, Shield, Pencil, Info } from 'lucide-react';
 import { format } from 'date-fns';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
@@ -8,6 +8,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useState } from 'react';
+import { APP_VERSION } from '@/lib/version';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -48,15 +49,15 @@ export default function Profile() {
 
         {/* Profile card */}
         <motion.div
-          className="bg-card rounded-2xl border border-border/50 shadow-soft overflow-hidden"
+          className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
           {/* Header section */}
-          <div className="p-5 sm:p-8 bg-gradient-to-br from-primary/5 to-accent/5">
+          <div className="p-5 sm:p-8 bg-gradient-to-br from-primary/10 to-primary/5 border-b border-border">
             <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-primary/20 flex items-center justify-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-card border-2 border-primary/20 flex items-center justify-center shadow-sm">
                 <img 
                   src={profile?.avatar_url || '/profile.png'} 
                   alt="Profile" 
@@ -66,27 +67,28 @@ export default function Profile() {
                     e.currentTarget.nextElementSibling?.classList.remove('hidden');
                   }}
                 />
-                <User className="w-10 h-10 text-primary hidden" />
+                <User className="w-10 h-10 text-primary/60 hidden" />
               </div>
               <div className="flex-1">
-                <h2 className="font-display text-2xl font-semibold text-foreground">
+                <h2 className="font-display text-2xl font-semibold text-foreground mb-1">
                   {user?.user_metadata?.full_name || 'User'}
                 </h2>
-                <p className="text-muted-foreground break-words">
+                <p className="text-muted-foreground break-words text-sm">
                   {user?.email}
                 </p>
               </div>
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="w-full sm:w-auto sm:ml-auto">
+                  <Button variant="outline" className="w-full sm:w-auto sm:ml-auto border-primary/30 hover:border-primary hover:bg-primary/5">
+                    <Pencil className="w-4 h-4 mr-2" />
                     Edit Photo
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>Select a profile avatar</DialogTitle>
+                    <DialogTitle className="text-lg font-semibold">Select a profile avatar</DialogTitle>
                   </DialogHeader>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-4 max-h-[60vh] overflow-y-auto">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[60vh] overflow-y-auto p-1">
                     {avatarOptions.map((url) => (
                       <button
                         key={url}
@@ -94,7 +96,7 @@ export default function Profile() {
                           await updateAvatar.mutateAsync(url);
                           setOpen(false);
                         }}
-                        className="rounded-xl overflow-hidden border hover:border-primary focus:outline-none"
+                        className="rounded-xl overflow-hidden border-2 border-border hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                         aria-label={`Choose avatar ${url}`}
                       >
                         <img src={url} alt="Avatar option" className="w-full h-16 sm:h-20 object-cover" />
@@ -107,42 +109,59 @@ export default function Profile() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-b border-border divide-y sm:divide-y-0 sm:divide-x">
+          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-b border-border divide-y sm:divide-y-0 sm:divide-x divide-border bg-muted/30">
             {stats.map((stat) => (
               <div key={stat.label} className="p-4 sm:p-6 text-center">
-                <p className="font-display text-2xl font-semibold text-foreground">
+                <p className="font-display text-3xl font-bold text-foreground mb-1">
                   {stat.value}
                 </p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground font-medium">{stat.label}</p>
               </div>
             ))}
           </div>
 
           {/* Details */}
-          <div className="p-6 space-y-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-muted/50">
-              <Mail className="w-5 h-5 text-muted-foreground" />
+          <div className="p-6 space-y-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-card border border-border">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Mail className="w-5 h-5 text-primary" />
+              </div>
               <div className="w-full">
-                <p className="text-sm text-muted-foreground">Email</p>
-                <p className="font-medium break-words">{user?.email}</p>
+                <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide font-medium">Email</p>
+                <p className="font-medium text-foreground break-words">{user?.email}</p>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-muted/50">
-              <Calendar className="w-5 h-5 text-muted-foreground" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-card border border-border">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Calendar className="w-5 h-5 text-primary" />
+              </div>
               <div>
-                <p className="text-sm text-muted-foreground">Member since</p>
-                <p className="font-medium">
+                <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide font-medium">Member since</p>
+                <p className="font-medium text-foreground">
                   {user?.created_at
                     ? format(new Date(user.created_at), 'MMMM d, yyyy')
                     : 'N/A'}
                 </p>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-muted/50">
-              <Shield className="w-5 h-5 text-muted-foreground" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-card border border-border">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Shield className="w-5 h-5 text-primary" />
+              </div>
               <div>
-                <p className="text-sm text-muted-foreground">Account Status</p>
-                <p className="font-medium text-primary">Verified & Secure</p>
+                <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide font-medium">Account Status</p>
+                <p className="font-semibold text-primary">Verified & Secure</p>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl bg-card border border-border">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Info className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide font-medium">App Version</p>
+                <p className="font-medium text-foreground">
+                  v{APP_VERSION}
+                </p>
               </div>
             </div>
           </div>
