@@ -10,18 +10,26 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
   console.error('Missing Supabase environment variables. Please check your .env file.');
-  console.error('SUPABASE_URL:', SUPABASE_URL);
+  console.error('SUPABASE_URL:', SUPABASE_URL ? 'Set' : 'Missing');
   console.error('SUPABASE_PUBLISHABLE_KEY:', SUPABASE_PUBLISHABLE_KEY ? 'Set' : 'Missing');
+  
+  if (typeof window !== 'undefined') {
+    // Only show alert in browser environment and in development
+    if (import.meta.env.DEV) {
+      console.warn('⚠️ Supabase is not configured. The app may not function correctly.');
+    }
+  }
 }
 
 export const supabase = createClient<Database>(
-  SUPABASE_URL || '', 
-  SUPABASE_PUBLISHABLE_KEY || '', 
+  SUPABASE_URL || 'https://placeholder.supabase.co', 
+  SUPABASE_PUBLISHABLE_KEY || 'placeholder-key', 
   {
     auth: {
-      storage: localStorage,
+      storage: typeof window !== 'undefined' ? localStorage : undefined,
       persistSession: true,
       autoRefreshToken: true,
+      detectSessionInUrl: true,
     }
   }
 );

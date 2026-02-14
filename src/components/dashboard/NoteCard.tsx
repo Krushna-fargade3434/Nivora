@@ -98,8 +98,8 @@ export function NoteCard({
         </div>
       </div>
 
-      {/* Action buttons - visible on mobile, visible on hover on desktop */}
-      <div className="absolute bottom-3 right-3 z-20 flex sm:hidden sm:group-hover:flex items-center gap-1">
+      {/* Action buttons - always visible on mobile, visible on hover on desktop */}
+      <div className="absolute bottom-3 right-3 z-20 flex opacity-100 sm:opacity-0 sm:group-hover:opacity-100 items-center gap-1 transition-opacity duration-200">
         <Button
           variant="ghost"
           size="icon"

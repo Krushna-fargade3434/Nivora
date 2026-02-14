@@ -166,6 +166,21 @@
   .filter-chip-inactive {
     @apply bg-card border border-border text-muted-foreground hover:bg-muted;
   }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Prevent text overflow */
+  .text-wrap-balance {
+    text-wrap: balance;
+  }
 }
 
 @keyframes float {

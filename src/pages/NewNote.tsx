@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Check, Palette, Image as ImageIcon, X } from 'lucide-react';
 import { useNotes, CreateNoteInput, Note } from '@/hooks/useNotes';
@@ -42,6 +42,22 @@ export default function NewNote() {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showImagePicker, setShowImagePicker] = useState(false);
 
+  const titleRef = useRef<HTMLTextAreaElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize textarea function
+  const autoResize = (element: HTMLTextAreaElement | null) => {
+    if (element) {
+      element.style.height = 'auto';
+      element.style.height = element.scrollHeight + 'px';
+    }
+  };
+
+  useEffect(() => {
+    autoResize(titleRef.current);
+    autoResize(contentRef.current);
+  }, [title, content]);
+
   useEffect(() => {
     if (existingNote) {
       setTitle(existingNote.title || '');
@@ -73,6 +89,26 @@ export default function NewNote() {
     }
     navigate('/dashboard');
   };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl/Cmd + S to save
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        if (title.trim()) {
+          handleSave();
+        }
+      }
+      // Escape to go back
+      if (e.key === 'Escape') {
+        navigate('/dashboard');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [title, content, bgColor, bgImageUrl, tags, isEdit, existingNote]);
 
   return (
     <div className="fixed inset-0 bg-background flex flex-col">
@@ -133,10 +169,11 @@ export default function NewNote() {
         <div className="relative z-10 px-5 py-6">
           {/* Title Input */}
           <textarea
+            ref={titleRef}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Note title..."
-            className="w-full bg-transparent border-none outline-none resize-none text-3xl font-bold text-foreground placeholder:text-muted-foreground/40 mb-4"
+            className="w-full bg-transparent border-none outline-none resize-none text-3xl font-bold text-foreground placeholder:text-muted-foreground/40 mb-4 overflow-hidden"
             rows={1}
             style={{
               minHeight: '44px',
@@ -147,10 +184,11 @@ export default function NewNote() {
 
           {/* Content Input */}
           <textarea
+            ref={contentRef}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Write your note here..."
-            className="w-full bg-transparent border-none outline-none resize-none text-base text-foreground/90 placeholder:text-muted-foreground/40 leading-relaxed"
+            className="w-full bg-transparent border-none outline-none resize-none text-base text-foreground/90 placeholder:text-muted-foreground/40 leading-relaxed overflow-hidden"
             rows={10}
             style={{
               minHeight: 'calc(100vh - 300px)',

@@ -3,13 +3,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Search, Star, Loader2 } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { NoteCard } from '@/components/dashboard/NoteCard';
-// import { NoteEditor } from '@/components/dashboard/NoteEditor';
 import { Input } from '@/components/ui/input';
 import { useNotes } from '@/hooks/useNotes';
 import { useNavigate } from 'react-router-dom';
 
 export default function Favorites() {
-  const { notes, isLoading, updateNote, deleteNote } = useNotes();
+  const { notes, isLoading, deleteNote, toggleFavorite } = useNotes();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
@@ -25,10 +24,6 @@ export default function Favorites() {
         note.tags?.some((tag) => tag.toLowerCase().includes(query))
     );
   }, [favoriteNotes, searchQuery]);
-
-  const handleSaveNote = async (data: { id: string; is_favorite: boolean }) => {
-    await updateNote.mutateAsync({ id: data.id, is_favorite: data.is_favorite });
-  };
 
   const handleDeleteNote = async (id: string) => {
     await deleteNote.mutateAsync(id);
@@ -105,9 +100,8 @@ export default function Favorites() {
                   onEdit={(n) => navigate(`/dashboard/note/${n.id}`)}
                   onDelete={handleDeleteNote}
                   onToggleFavorite={(id, isFavorite) =>
-                    handleSaveNote({ id, is_favorite: isFavorite })
+                    toggleFavorite.mutate({ id, is_favorite: isFavorite })
                   }
-                  onTogglePin={() => {}}
                 />
               ))}
             </AnimatePresence>

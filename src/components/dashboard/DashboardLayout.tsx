@@ -14,21 +14,22 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="flex min-h-screen bg-background">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile header */}
-        <header className="lg:hidden sticky top-0 z-30 flex items-center gap-4 p-4 bg-background/80 backdrop-blur-md border-b border-border">
+        <header className="lg:hidden sticky top-0 z-30 flex items-center gap-4 p-4 bg-background/95 backdrop-blur-md border-b border-border">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setSidebarOpen(true)}
+            className="shrink-0"
           >
             <Menu className="w-5 h-5" />
           </Button>
-          <span className="font-display text-lg font-semibold">Nivora</span>
+          <span className="font-display text-lg font-semibold truncate">Nivora</span>
         </header>
 
         {/* Main content */}
-        <main className="flex-1 p-4 lg:p-8">
+        <main className="flex-1 overflow-y-auto">
           {children}
         </main>
       </div>

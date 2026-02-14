@@ -134,9 +134,9 @@ export function AuthForm() {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                 {errors.general && (
-                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm" role="alert">
                     {errors.general}
                   </div>
                 )}
@@ -145,7 +145,7 @@ export function AuthForm() {
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name</Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
                       <Input
                         id="fullName"
                         type="text"
@@ -153,10 +153,12 @@ export function AuthForm() {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         className="pl-11 h-12 rounded-xl"
+                        autoComplete="name"
+                        required={isSignUp}
                       />
                     </div>
                     {errors.fullName && (
-                      <p className="text-sm text-destructive">{errors.fullName}</p>
+                      <p className="text-sm text-destructive" role="alert">{errors.fullName}</p>
                     )}
                   </div>
                 )}
@@ -164,7 +166,7 @@ export function AuthForm() {
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
                     <Input
                       id="email"
                       type="email"
@@ -172,17 +174,19 @@ export function AuthForm() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-11 h-12 rounded-xl"
+                      autoComplete="email"
+                      required
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email}</p>
+                    <p className="text-sm text-destructive" role="alert">{errors.email}</p>
                   )}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
@@ -190,12 +194,15 @@ export function AuthForm() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="pl-11 pr-11 h-12 rounded-xl"
+                      autoComplete={isSignUp ? "new-password" : "current-password"}
+                      required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                       aria-label={showPassword ? "Hide password" : "Show password"}
+                      tabIndex={0}
                     >
                       {showPassword ? (
                         <EyeOff className="w-5 h-5" />
@@ -205,7 +212,7 @@ export function AuthForm() {
                     </button>
                   </div>
                   {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password}</p>
+                    <p className="text-sm text-destructive" role="alert">{errors.password}</p>
                   )}
                 </div>
 
