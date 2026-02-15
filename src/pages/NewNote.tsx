@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Check, Palette, Image as ImageIcon, X } from 'lucide-react';
+import { ArrowLeft, Check, Palette, Image as ImageIcon, X, Type, Bold, Italic, Underline, List } from 'lucide-react';
 import { useNotes, CreateNoteInput, Note } from '@/hooks/useNotes';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -67,9 +67,10 @@ export default function NewNote() {
   const [tags, setTags] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showImagePicker, setShowImagePicker] = useState(false);
+  const [showFormatPicker, setShowFormatPicker] = useState(false);
 
   const titleRef = useRef<HTMLTextAreaElement>(null);
-  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Auto-resize textarea function
   const autoResize = (element: HTMLTextAreaElement | null) => {
@@ -79,15 +80,72 @@ export default function NewNote() {
     }
   };
 
-  useEffect(() => {
-    autoResize(titleRef.current);
-    autoResize(contentRef.current);
-  }, [title, content]);
+  // Formatting functions
+  const applyFormat = (format: 'bold' | 'italic' | 'underline' | 'bullet' | 'number' | 'heading1' | 'heading2' | 'heading3') => {
+    const textarea = contentRef.current;
+    if (!textarea) return;
+
+    textarea.focus();
+
+    switch (format) {
+      case 'bold':
+        document.execCommand('bold', false);
+        break;
+
+      case 'italic':
+        document.execCommand('italic', false);
+        break;
+
+      case 'underline':
+        document.execCommand('underline', false);
+        break;
+
+      case 'bullet':
+        document.execCommand('insertUnorderedList', false);
+        break;
+
+      case 'number':
+        document.execCommand('insertOrderedList', false);
+        break;
+
+      case 'heading1':
+        document.execCommand('formatBlock', false, '<h1>');
+        break;
+
+      case 'heading2':
+        document.execCommand('formatBlock', false, '<h2>');
+        break;
+
+      case 'heading3':
+        document.execCommand('formatBlock', false, '<h3>');
+        break;
+    }
+  };
+
+  const increaseFontSize = () => {
+    if (contentRef.current) {
+      const currentSize = parseInt(window.getComputedStyle(contentRef.current).fontSize);
+      contentRef.current.style.fontSize = (currentSize + 2) + 'px';
+    }
+  };
+
+  const decreaseFontSize = () => {
+    if (contentRef.current) {
+      const currentSize = parseInt(window.getComputedStyle(contentRef.current).fontSize);
+      if (currentSize > 12) {
+        contentRef.current.style.fontSize = (currentSize - 2) + 'px';
+      }
+    }
+  };
 
   useEffect(() => {
-    if (existingNote) {
+    autoResize(titleRef.current);
+  }, [title]);
+
+  useEffect(() => {
+    if (existingNote && contentRef.current) {
       setTitle(cleanNoteTitle(existingNote.title || ''));
-      setContent(cleanNoteContent(existingNote.content || ''));
+      contentRef.current.innerHTML = cleanNoteContent(existingNote.content || '');
       setBgColor(existingNote.bg_color || '#F8F9FA');
       setBgImageUrl(existingNote.bg_image_url || undefined);
       setTags(cleanTags(existingNote.tags).join(', '));
@@ -97,9 +155,11 @@ export default function NewNote() {
   const handleSave = async () => {
     if (!title.trim()) return;
 
+    const contentHTML = contentRef.current?.innerHTML || '';
+    
     const data: CreateNoteInput = {
       title: title.trim(),
-      content: content.trim(),
+      content: contentHTML,
       bg_color: bgColor,
       bg_image_url: bgImageUrl,
       tags: tags
@@ -125,6 +185,21 @@ export default function NewNote() {
         if (title.trim()) {
           handleSave();
         }
+      }
+      // Ctrl/Cmd + B for bold
+      if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+        e.preventDefault();
+        applyFormat('bold');
+      }
+      // Ctrl/Cmd + I for italic
+      if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+        e.preventDefault();
+        applyFormat('italic');
+      }
+      // Ctrl/Cmd + U for underline
+      if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+        e.preventDefault();
+        applyFormat('underline');
       }
       // Escape to go back
       if (e.key === 'Escape') {
@@ -166,7 +241,7 @@ export default function NewNote() {
 
       {/* Main Content */}
       <motion.div
-        className="flex-1 overflow-y-auto pb-32"
+        className="flex-1 overflow-y-auto pb-32 md:pb-28"
         style={{
           backgroundColor: bgImageUrl ? '#FFFFFF' : bgColor,
         }}
@@ -209,15 +284,14 @@ export default function NewNote() {
           />
 
           {/* Content Input */}
-          <textarea
+          <div
             ref={contentRef}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Write your note here..."
-            className="w-full bg-transparent border-none outline-none resize-none text-base text-foreground/90 placeholder:text-muted-foreground/40 leading-relaxed overflow-hidden"
-            rows={10}
+            contentEditable
+            onInput={(e) => setContent(e.currentTarget.textContent || '')}
+            data-placeholder="Write your note here..."
+            className="w-full bg-transparent border-none outline-none text-base text-foreground/90 leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:my-3 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:my-2 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:my-2 [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6 [&_li]:my-1 [&_b]:font-bold [&_strong]:font-bold [&_i]:italic [&_em]:italic [&_u]:underline"
             style={{
-              minHeight: 'calc(100vh - 300px)',
+              minHeight: 'calc(100vh - 400px)',
             }}
           />
         </div>
@@ -225,53 +299,83 @@ export default function NewNote() {
 
       {/* Bottom Action Sheet */}
       <motion.div
-        className="fixed bottom-0 left-0 right-0 bg-card border-t border-border/30 shadow-2xl z-30"
+        className="fixed bottom-0 left-0 right-0 z-30 pb-2"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 30 }}
       >
-        <div className="px-4 py-4 flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
+        <div className="px-4 py-4 flex items-center justify-center gap-6">
+          <motion.button
+            type="button"
             onClick={() => {
               setShowColorPicker(!showColorPicker);
               setShowImagePicker(false);
+              setShowFormatPicker(false);
             }}
             className={cn(
-              "h-11 w-11 rounded-full",
-              showColorPicker && "bg-primary/20 text-primary"
+              "relative w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg",
+              showColorPicker 
+                ? "bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-pink-500/50" 
+                : "bg-gradient-to-br from-pink-400 to-purple-500 text-white shadow-pink-400/30 hover:shadow-pink-500/50"
             )}
+            whileTap={{ scale: 0.85, rotate: -10 }}
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            title="Background color"
           >
-            <Palette className="w-5 h-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
+            <Palette className="w-6 h-6" />
+          </motion.button>
+          
+          <motion.button
+            type="button"
             onClick={() => {
               setShowImagePicker(!showImagePicker);
               setShowColorPicker(false);
+              setShowFormatPicker(false);
             }}
             className={cn(
-              "h-11 w-11 rounded-full",
-              showImagePicker && "bg-primary/20 text-primary"
+              "relative w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg",
+              showImagePicker 
+                ? "bg-gradient-to-br from-blue-500 to-cyan-600 text-white shadow-blue-500/50" 
+                : "bg-gradient-to-br from-blue-400 to-cyan-500 text-white shadow-blue-400/30 hover:shadow-blue-500/50"
             )}
+            whileTap={{ scale: 0.85, rotate: 10 }}
+            whileHover={{ scale: 1.1, rotate: -5 }}
+            title="Background image"
           >
-            <ImageIcon className="w-5 h-5" />
-          </Button>
+            <ImageIcon className="w-6 h-6" />
+          </motion.button>
+          
+          <motion.button
+            type="button"
+            onClick={() => {
+              setShowFormatPicker(!showFormatPicker);
+              setShowColorPicker(false);
+              setShowImagePicker(false);
+            }}
+            className={cn(
+              "relative w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg",
+              showFormatPicker 
+                ? "bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-amber-500/50" 
+                : "bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-amber-400/30 hover:shadow-amber-500/50"
+            )}
+            whileTap={{ scale: 0.85, rotate: -10 }}
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            title="Format"
+          >
+            <Type className="w-6 h-6" />
+          </motion.button>
         </div>
 
         {/* Color Picker Panel */}
         <AnimatePresence>
           {showColorPicker && (
             <motion.div
-              className="px-4 pb-4 pt-2 border-t border-border/20"
+              className="px-4 pb-4 pt-2 bg-background/50 backdrop-blur-sm"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <p className="text-sm text-muted-foreground mb-3">Background:</p>
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {colorOptions.map((color) => (
                   <button
@@ -304,19 +408,21 @@ export default function NewNote() {
         <AnimatePresence>
           {showImagePicker && (
             <motion.div
-              className="px-4 pb-4 pt-2 border-t border-border/20"
+              className="px-4 pb-4 pt-2 bg-background/50 backdrop-blur-sm"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <p className="text-sm text-muted-foreground mb-3">Background image:</p>
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {bgImages.map((src) => (
                   <button
                     key={src}
                     type="button"
-                    onClick={() => setBgImageUrl(src)}
+                    onClick={() => {
+                      setBgImageUrl(src);
+                      setBgColor('#FFFFFF');
+                    }}
                     className={cn(
                       'relative shrink-0 w-20 h-20 rounded-xl border-2 overflow-hidden transition-all',
                       bgImageUrl === src
@@ -335,12 +441,125 @@ export default function NewNote() {
                 {bgImageUrl && (
                   <button
                     type="button"
-                    onClick={() => setBgImageUrl(undefined)}
+                    onClick={() => {
+                      setBgImageUrl(undefined);
+                      setBgColor('#F8F9FA');
+                    }}
                     className="shrink-0 w-20 h-20 rounded-xl border-2 border-border/50 flex items-center justify-center text-muted-foreground hover:text-destructive hover:border-destructive transition-all"
                   >
                     <X className="w-6 h-6" />
                   </button>
                 )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Format Picker Panel */}
+        <AnimatePresence>
+          {showFormatPicker && (
+            <motion.div
+              className="px-4 pb-4 pt-2 bg-background/50 backdrop-blur-sm"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {/* Formatting Tools */}
+              <div className="flex gap-2 flex-wrap items-center">
+                {/* Text Styling */}
+                <button
+                  type="button"
+                  onClick={() => applyFormat('bold')}
+                  className="p-2 rounded bg-background hover:bg-muted transition-colors active:scale-95"
+                  title="Bold (Ctrl+B) - **text**"
+                >
+                  <Bold className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyFormat('italic')}
+                  className="p-2 rounded bg-background hover:bg-muted transition-colors active:scale-95"
+                  title="Italic (Ctrl+I) - *text*"
+                >
+                  <Italic className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyFormat('underline')}
+                  className="p-2 rounded bg-background hover:bg-muted transition-colors active:scale-95"
+                  title="Underline - __text__"
+                >
+                  <Underline className="w-5 h-5" />
+                </button>
+
+                <div className="w-px h-6 bg-border mx-1" />
+
+                {/* Headings */}
+                <button
+                  type="button"
+                  onClick={() => applyFormat('heading1')}
+                  className="px-2 py-1 rounded bg-background hover:bg-muted transition-colors active:scale-95 text-sm font-bold"
+                  title="Heading 1 - # text"
+                >
+                  H1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyFormat('heading2')}
+                  className="px-2 py-1 rounded bg-background hover:bg-muted transition-colors active:scale-95 text-sm font-bold"
+                  title="Heading 2 - ## text"
+                >
+                  H2
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyFormat('heading3')}
+                  className="px-2 py-1 rounded bg-background hover:bg-muted transition-colors active:scale-95 text-sm font-bold"
+                  title="Heading 3 - ### text"
+                >
+                  H3
+                </button>
+
+                <div className="w-px h-6 bg-border mx-1" />
+
+                {/* Lists */}
+                <button
+                  type="button"
+                  onClick={() => applyFormat('bullet')}
+                  className="p-2 rounded bg-background hover:bg-muted transition-colors active:scale-95"
+                  title="Bullet list - • text"
+                >
+                  <List className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyFormat('number')}
+                  className="p-2 rounded bg-background hover:bg-muted transition-colors active:scale-95"
+                  title="Numbered list - 1. text"
+                >
+                  <span className="text-sm font-medium">1.</span>
+                </button>
+
+                <div className="w-px h-6 bg-border mx-1" />
+
+                {/* Font Size */}
+                <button
+                  type="button"
+                  onClick={decreaseFontSize}
+                  className="px-2 py-1 rounded bg-background hover:bg-muted transition-colors active:scale-95 text-sm font-bold"
+                  title="Decrease font size"
+                >
+                  A-
+                </button>
+                <button
+                  type="button"
+                  onClick={increaseFontSize}
+                  className="px-2 py-1 rounded bg-background hover:bg-muted transition-colors active:scale-95 text-sm font-bold"
+                  title="Increase font size"
+                >
+                  A+
+                </button>
               </div>
             </motion.div>
           )}

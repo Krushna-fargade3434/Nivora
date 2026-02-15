@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-type FilterType = 'all' | 'quick' | 'passwords' | 'favorites';
+type FilterType = 'all' | 'quick' | 'favorites';
 type SortType = 'created' | 'edited' | 'title';
 
 export default function Dashboard() {
@@ -29,7 +29,6 @@ export default function Dashboard() {
   const filters = [
     { id: 'all' as FilterType, label: 'All notes' },
     { id: 'quick' as FilterType, label: 'Quick notes' },
-    { id: 'passwords' as FilterType, label: 'Passwords' },
     { id: 'favorites' as FilterType, label: 'Favorites' },
   ];
 
@@ -39,11 +38,6 @@ export default function Dashboard() {
     // Apply filter
     if (activeFilter === 'favorites') {
       result = result.filter((note) => note.is_favorite);
-    } else if (activeFilter === 'passwords') {
-      result = result.filter((note) => 
-        note.tags?.includes('password') || 
-        note.title.toLowerCase().includes('password')
-      );
     } else if (activeFilter === 'quick') {
       result = result.filter((note) => 
         note.tags?.includes('quick') || 
@@ -106,13 +100,7 @@ export default function Dashboard() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => navigate('/dashboard/new')}>
-                  Edit
-                </DropdownMenuItem>
                 <DropdownMenuItem>List view</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/dashboard/profile')}>
-                  Settings
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setSortBy('created')}>
                   Sort by time created

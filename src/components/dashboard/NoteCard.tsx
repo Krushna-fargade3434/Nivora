@@ -85,9 +85,10 @@ export function NoteCard({
         </h3>
 
         {note.content && (
-          <p className="text-sm text-muted-foreground line-clamp-5 mb-4 flex-1">
-            {cleanNoteContent(note.content)}
-          </p>
+          <div 
+            className="text-sm text-muted-foreground line-clamp-5 mb-4 flex-1 [&_h1]:text-xl [&_h1]:font-bold [&_h2]:text-lg [&_h2]:font-bold [&_h3]:text-base [&_h3]:font-bold [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_b]:font-bold [&_strong]:font-bold [&_i]:italic [&_em]:italic [&_u]:underline"
+            dangerouslySetInnerHTML={{ __html: note.content }}
+          />
         )}
 
         {/* Footer */}
